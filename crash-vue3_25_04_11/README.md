@@ -27,3 +27,13 @@ npm run dev
 ```sh
 npm run build
 ```
+
+
+```sh
+npm install -D tailwindcss@3 postcss@latest autoprefixer@latest
+```
+
+
+vs extensions
+- Vue - official
+- PostCSS Language Support
