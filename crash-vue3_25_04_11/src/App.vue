@@ -10,5 +10,8 @@
         title="Test Title"
     />
     <HomeCards />
-    <Joblistings />
+    <Joblistings 
+        :limit="3"
+        :showButton="true"
+    />
 </template>
