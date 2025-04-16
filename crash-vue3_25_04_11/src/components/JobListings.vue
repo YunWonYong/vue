@@ -1,10 +1,8 @@
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref, defineProps, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import JobListing from "@/components/JobListing.vue";
-import jobData from "@/jobs2.json";
-
-
+import axios from "axios";
 
 defineProps({
     limit: Number,
@@ -13,7 +11,16 @@ defineProps({
         default: false,
     },
 });
-const jobs = ref(jobData);
+const jobs = ref([]);
+
+onMounted(async () => {
+    try {
+        const response = await axios.get("http://localhost:5000/jobs");
+        jobs.value = response.data;
+    } catch(e) {
+        console.error("Error fetching jobs.", e);
+    }
+});
 </script>
 <template>
     <section class="bg-blue-50 px-4 py-10">
