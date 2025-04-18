@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "strictNullChecks": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "outDir": "./dist",
+        "noImplicitAny": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"],
+        },
+        "noEmit": true,
+        "allowImportingTsExtensions": true,
+    },
+    "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
+    "exclude": [
+        "node_modules",
+    ]
+}

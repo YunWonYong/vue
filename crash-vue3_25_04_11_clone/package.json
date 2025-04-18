@@ -1,0 +1,35 @@
+{
+    "name": "todolist",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "dev": "cross-env ENV=dev webpack --config webpack.config.mjs",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "webpack-test": "webpack --config webpack.config.mjs"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "engines": {
+        "node": ">=22.14.0"
+    },
+    "description": "todolist vue3 and typescript",
+    "devDependencies": {
+        "@babel/preset-env": "^7.26.9",
+        "@babel/preset-typescript": "^7.27.0",
+        "babel-loader": "^10.0.0",
+        "cross-env": "^7.0.3",
+        "css-loader": "^7.1.2",
+        "dotenv": "^16.5.0",
+        "html-webpack-plugin": "^5.6.3",
+        "style-loader": "^4.0.0",
+        "tsconfig-paths-webpack-plugin": "^4.2.0",
+        "typescript": "^5.8.3",
+        "vue-loader": "^17.4.2",
+        "webpack": "^5.99.6",
+        "webpack-cli": "^6.0.1"
+    },
+    "dependencies": {
+        "vue": "^3.5.13"
+    }
+}
