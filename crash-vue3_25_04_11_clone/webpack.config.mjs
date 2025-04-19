@@ -1,3 +1,4 @@
+import webpack from "webpack";
 import path from "node:path";
 import dotenv from "dotenv";
 import HtmlWebpackPlugin from "html-webpack-plugin";
@@ -9,20 +10,38 @@ import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 
 const getDotEnvFilePath = (env) => {
     switch (env) {
-        case "local":
         case "dev":
-            return ".env.local";
+            return ".env.dev";
         case "qa":
             return ".env.qa";
+        case "live":
+            return ".env.live";
+    }
+
+    throw new Error(`env ${env} not found .env file path.`);
+};
+
+const getEnv = (env) => {
+    if (!env) {
+        return "dev";
+    }
+    switch (env) {
+        case "local":
+        case "dev":
+            return "dev";
+        case "qa":
+        case "stage":
+            return "qa";
         case "production":
         case "live":
-            return ".env.production";
+            return "live";
     }
-    return ".env";
+
+    throw new Error(`env ${env} not supported.`);
 };
 
 console.log("webpack");
-const env = process.env.ENV;
+const env = getEnv(process.env.ENV);
 console.log("env: ", env);
 const __dirname = path.resolve();
 const envFilePath = getDotEnvFilePath(env);
@@ -36,11 +55,13 @@ if (config.error) {
     throw new Error(`config parsed empty. env file path: ${path.resolve(__dirname, envFilePath)}`);
 }
 
+const isProduction = env === "live";
+
 const webpackConfig = {
     mode: config.parsed.BUILD_MODE,
     entry: "./src/index.ts",
     output: {
-        filename: "main.js",
+        filename: isProduction? "main[contenthash].js": "main.js",
         path: path.resolve(__dirname, "dist"),
         clean: true,
     },
@@ -86,6 +107,12 @@ const webpackConfig = {
             favicon: path.resolve(__dirname, "public/favicon.ico")
         }),
         new VueLoaderPlugin(),
+        new webpack.DefinePlugin({
+            NODE_ENV: JSON.stringify(env),
+            __VUE_OPTIONS_API__: JSON.stringify(false),  // Vue Options API 활성화
+            __VUE_PROD_DEVTOOLS__: JSON.stringify(!isProduction), // Vue devtools 비활성화 (production에서만)
+            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(!isProduction), // Hydration mismatch 세부 사항 비활성화
+        }),
     ],
     resolve: {
         extensions: [
@@ -102,7 +129,7 @@ const webpackConfig = {
     },
 };
 
-if (env !== "live" && env !== "production") {
+if (!isProduction) {
     const host = config.parsed.HOST || "localhost";
     const port = config.parsed.PORT || 3000;
 
@@ -130,6 +157,8 @@ if (env !== "live" && env !== "production") {
             extensions: ["js", "ts", "vue"],
         })
     );
+
+    webpackConfig.devtool = "eval-source-map";
 } else {
     webpackConfig.optimization = {
         minimize: true,
