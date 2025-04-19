@@ -14,7 +14,7 @@
         "noEmit": true,
         "allowImportingTsExtensions": true,
     },
-    "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
+    "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "src/vue.d.ts"],
     "exclude": [
         "node_modules",
     ]

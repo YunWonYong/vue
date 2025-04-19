@@ -3,6 +3,10 @@ import dotenv from "dotenv";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin"
 import { VueLoaderPlugin } from "vue-loader";
+import ESLintPlugin from "eslint-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
+import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+
 const getDotEnvFilePath = (env) => {
     switch (env) {
         case "local":
@@ -10,6 +14,7 @@ const getDotEnvFilePath = (env) => {
             return ".env.local";
         case "qa":
             return ".env.qa";
+        case "production":
         case "live":
             return ".env.production";
     }
@@ -59,10 +64,12 @@ const webpackConfig = {
             {
                 test: /\.(js|ts)$/,
                 loader: "babel-loader",
+                exclude: /node_modules/,
             },
             {
                 test: /\.vue$/,
                 loader: "vue-loader",
+                exclude: /node_modules/,
             }
         ],
     },
@@ -86,4 +93,50 @@ const webpackConfig = {
         ],
     },
 };
+
+if (env !== "live" && env !== "production") {
+    const host = config.parsed.HOST || "localhost";
+    const port = config.parsed.PORT || 3000;
+
+    webpackConfig.devServer = {
+        host,
+        port,
+        hot: true,
+        compress: true,
+        open: true,
+        historyApiFallback: {
+            rewrites: [
+                {
+                    from: /./,
+                    to: "/index.html"
+                }
+            ],
+        },
+        client: {
+            overlay: true
+        }
+    };
+
+    webpackConfig.plugins.push(
+        new ESLintPlugin({
+            extensions: ["js", "ts", "vue"],
+        })
+    );
+} else {
+    webpackConfig.optimization = {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    compress: {
+                        drop_console: true,
+                        drop_debugger: true,
+                    },
+                },
+            }),
+            new CssMinimizerPlugin(),
+        ],
+    };
+}
+
 export default webpackConfig;
