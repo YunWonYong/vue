@@ -50,7 +50,7 @@ const webpackConfig = {
                 test: /\.css$/,
                 use: [
                     "style-loader",
-                    "css-loader"
+                    "css-loader",
                 ],
             },
             {
@@ -70,12 +70,20 @@ const webpackConfig = {
                 test: /\.vue$/,
                 loader: "vue-loader",
                 exclude: /node_modules/,
+            },
+            {
+                test: /\.ico$/,
+                type: "asset/resource",
+                generator: {
+                    filename: "favicon.ico",
+                },
             }
         ],
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: "./index.html",
+            favicon: path.resolve(__dirname, "public/favicon.ico")
         }),
         new VueLoaderPlugin(),
     ],
@@ -108,12 +116,12 @@ if (env !== "live" && env !== "production") {
             rewrites: [
                 {
                     from: /./,
-                    to: "/index.html"
+                    to: "/index.html",
                 }
             ],
         },
         client: {
-            overlay: true
+            overlay: true,
         }
     };
 
