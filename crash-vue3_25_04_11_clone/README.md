@@ -1,4 +1,4 @@
-* npm i -D typescript
+* npm i -D typescript vue-tsc
 * npm i vue
 
 # webpack

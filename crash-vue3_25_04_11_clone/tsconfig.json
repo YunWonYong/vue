@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
         "moduleResolution": "node",
         "strictNullChecks": true,
         "allowSyntheticDefaultImports": true,
@@ -14,7 +16,10 @@
         "noEmit": true,
         "allowImportingTsExtensions": true,
     },
-    "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "src/vue.d.ts"],
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.vue",
+    ],
     "exclude": [
         "node_modules",
     ]
