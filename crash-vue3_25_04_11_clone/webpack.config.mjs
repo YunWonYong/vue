@@ -101,19 +101,6 @@ const webpackConfig = {
             }
         ],
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: "./index.html",
-            favicon: path.resolve(__dirname, "public/favicon.ico")
-        }),
-        new VueLoaderPlugin(),
-        new webpack.DefinePlugin({
-            NODE_ENV: JSON.stringify(env),
-            __VUE_OPTIONS_API__: JSON.stringify(false),  // Vue Options API 활성화
-            __VUE_PROD_DEVTOOLS__: JSON.stringify(!isProduction), // Vue devtools 비활성화 (production에서만)
-            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(!isProduction), // Hydration mismatch 세부 사항 비활성화
-        }),
-    ],
     resolve: {
         extensions: [
             ".js",
@@ -128,6 +115,16 @@ const webpackConfig = {
         ],
     },
 };
+
+
+const htmlWebpackPluginOptions = {
+    template: "./index.html",
+    favicon: path.resolve(__dirname, "public/favicon.ico")
+};
+
+const plugins = [
+    new VueLoaderPlugin(),
+];
 
 if (!isProduction) {
     const host = config.parsed.HOST || "localhost";
@@ -149,16 +146,31 @@ if (!isProduction) {
         },
         client: {
             overlay: true,
-        }
+        },
     };
 
-    webpackConfig.plugins.push(
+    plugins.push(
         new ESLintPlugin({
             extensions: ["js", "ts", "vue"],
         })
     );
 
     webpackConfig.devtool = "eval-source-map";
+
+    const proxyContext = config.parsed.PROXY_CONTEXT;
+    const proxyTarget = config.parsed.PROXY_API_URL;
+    if (proxyContext && proxyTarget) {
+        webpackConfig.devServer.proxy = [
+            {
+                context: proxyContext,
+                target: proxyTarget,
+                changeOrigin: true,
+                pathRewrite: {
+                    [`^${proxyContext}`]: "",
+                },
+            }
+        ];
+    }
 } else {
     webpackConfig.optimization = {
         minimize: true,
@@ -174,6 +186,25 @@ if (!isProduction) {
             new CssMinimizerPlugin(),
         ],
     };
+
+    htmlWebpackPluginOptions.minify = {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        useShortDoctype: true,
+    };
 }
 
+plugins.push(
+    new HtmlWebpackPlugin(htmlWebpackPluginOptions),
+    new webpack.DefinePlugin({
+        BASE_SERVER_API_URL: JSON.stringify(config.parsed.BASE_SERVER_API_URL),
+        ENV: JSON.stringify(env),
+        __VUE_OPTIONS_API__: JSON.stringify(false),  // Vue Options API 활성화
+        __VUE_PROD_DEVTOOLS__: JSON.stringify(!isProduction), // Vue devtools 비활성화 (production에서만)
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(!isProduction), // Hydration mismatch 세부 사항 비활성화
+    }),
+);
+webpackConfig.plugins = plugins;
 export default webpackConfig;
