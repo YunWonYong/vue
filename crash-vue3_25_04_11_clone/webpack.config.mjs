@@ -49,16 +49,16 @@ const webpackConfig = {
                 ],
             },
             {
-                test: /\.(png|svg|jpg|jpeg|gif|webp)/i,
+                test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
                 type: "asset/resource",
             },
             {
-                test: /\.(woff|woff2|eot|ttf|otf)/,
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
                 type: "asset/resource",
             },
             {
-                test: /\.(js|ts)/,
-                loader: "babel-loader"
+                test: /\.(js|ts)$/,
+                loader: "babel-loader",
             },
             {
                 test: /\.vue$/,
