@@ -68,13 +68,6 @@ const webpackConfig = {
     module: {
         rules: [
             {
-                test: /\.css$/,
-                use: [
-                    "style-loader",
-                    "css-loader",
-                ],
-            },
-            {
                 test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
                 type: "asset/resource",
             },
@@ -91,6 +84,10 @@ const webpackConfig = {
                 test: /\.vue$/,
                 loader: "vue-loader",
                 exclude: /node_modules/,
+                options: {
+                    reactivityTransform: true,
+                    enableTsInTemplate: true,
+                },
             },
             {
                 test: /\.ico$/,
@@ -98,7 +95,33 @@ const webpackConfig = {
                 generator: {
                     filename: "favicon.ico",
                 },
-            }
+            },
+            {
+                test: /\.css$/,
+                oneOf: [
+                    {
+                        resourceQuery: /module/,
+                        use: [
+                            "vue-style-loader",
+                            {
+                                loader: "css-loader",
+                                options: {
+                                    modules: {
+                                        localIdentName: "[local]__[hash:base64:8]",
+                                        namedExport: false,
+                                    },
+                                }
+                            },
+                        ],
+                    },
+                    {
+                        use: [
+                            "vue-style-loader",
+                            "css-loader",
+                        ],
+                    }
+                ],
+            },
         ],
     },
     resolve: {

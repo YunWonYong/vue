@@ -12,6 +12,7 @@
 * npm i -D eslint-webpack-plugin
 * npm i -D terser-webpack-plugin css-minimizer-webpack-plugin
 * npm i -D webpack-dev-server
+* npm i -D vue-style-loader
 
 # babel 
 * npm i -D @babel/preset-env @babel/preset-typescript
